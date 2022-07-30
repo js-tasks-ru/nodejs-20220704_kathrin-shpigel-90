@@ -21,6 +21,7 @@ router.get('/subscribe', async (ctx, next) => {
     const timerId = setInterval(() => {
       if (subscribers[id]) {
         resolve(subscribers[id]);
+        delete subscribers[id];
         clearInterval(timerId);
       }
     }, 400);
