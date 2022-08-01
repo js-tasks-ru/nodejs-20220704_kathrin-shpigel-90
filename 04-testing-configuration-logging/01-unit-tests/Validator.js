@@ -4,9 +4,13 @@ module.exports = class Validator {
   }
 
   validate(obj) {
+    if (!this.rules || !obj) return [];
+
     const errors = [];
 
-    for (const field of Object.keys(this.rules)) {
+    for (const field of Object.keys(obj)) {
+      if (!(field in this.rules)) continue;
+
       const rules = this.rules[field];
 
       const value = obj[field];
@@ -21,17 +25,15 @@ module.exports = class Validator {
         case 'string':
           if (value.length < rules.min) {
             errors.push({field, error: `too short, expect ${rules.min}, got ${value.length}`});
-          }
-          if (value.length > rules.max) {
+          } else if (value.length > rules.max) {
             errors.push({field, error: `too long, expect ${rules.max}, got ${value.length}`});
           }
           break;
         case 'number':
           if (value < rules.min) {
             errors.push({field, error: `too little, expect ${rules.min}, got ${value}`});
-          }
-          if (value > rules.max) {
-            errors.push({field, error: `too big, expect ${rules.min}, got ${value}`});
+          } else if (value > rules.max) {
+            errors.push({field, error: `too big, expect ${rules.max}, got ${value}`});
           }
           break;
       }
